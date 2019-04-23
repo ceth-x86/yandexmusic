@@ -1,4 +1,4 @@
-package yandex
+package yandexmusic
 
 import (
 	"encoding/json"
