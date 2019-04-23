@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/demas/music/models"
-	"github.com/demas/music/yandexclient/yandexmodels"
 )
 
 type Playlist struct {
@@ -60,7 +59,7 @@ func GetPlaylist(id int64) *models.Playlist {
 
 	url := fmt.Sprintf("https://music.yandex.ru/handlers/playlist.jsx?owner=yamusic-new&kinds=%d", id)
 	content := get(url)
-	extendedPlaylist := yandexmodels.ExtendedPlaylist{}
+	extendedPlaylist := ExtendedPlaylist{}
 	if err := json.Unmarshal(content, &extendedPlaylist); err != nil {
 		log.Fatal(err)
 	}
