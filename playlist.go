@@ -6,9 +6,43 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-
-	"github.com/demas/music/models"
+	"time"
 )
+
+type MusicPlaylist struct {
+	Id                     uint
+	Name                   string
+	SpotifyId              string
+	DeezerId               int64
+	YandexId               int64
+	SnapshotId             string
+	TrackCount             uint
+	SkipSyncContent        uint
+	Deleted                uint
+	LastChanged            *time.Time
+	SkipReportWhileSyncing uint
+	Manual                 uint
+	Tracks                 []*MusicPlaylistTrack
+}
+
+type MusicPlaylistTrack struct {
+	Id               uint
+	PlaylistId       uint
+	Name             string
+	SpotifyId        string
+	DeezerId         int64
+	YandexId         string
+	Popularity       int
+	TrackNumber      int
+	Artist           string
+	ArtistId         string
+	Album            string
+	SourceRef        *uint
+	Transferred      uint
+	Deleted          uint
+	SourcePlaylistId *uint
+	ReleaseDate      string
+}
 
 type Playlist struct {
 	Id          uint    `json:"kind,omitempty"`
@@ -55,7 +89,7 @@ func get(url string) []byte {
 	return contents
 }
 
-func GetPlaylist(id int64) *models.Playlist {
+func GetPlaylist(id int64) *MusicPlaylist {
 
 	url := fmt.Sprintf("https://music.yandex.ru/handlers/playlist.jsx?owner=yamusic-new&kinds=%d", id)
 	content := get(url)
@@ -64,7 +98,7 @@ func GetPlaylist(id int64) *models.Playlist {
 		log.Fatal(err)
 	}
 
-	resultPlaylist := &models.Playlist{
+	resultPlaylist := &MusicPlaylist{
 		Name:            extendedPlaylist.Playlist.Name,
 		YandexId:        id,
 		SkipSyncContent: 0,
@@ -84,7 +118,7 @@ func GetPlaylist(id int64) *models.Playlist {
 			artist = serviceTrack.Artists[0].Name
 		}
 
-		resultTrack := &models.PlaylistTrack{
+		resultTrack := &MusicPlaylistTrack{
 			Name:        serviceTrack.Title,
 			YandexId:    serviceTrack.Id,
 			Popularity:  0,
